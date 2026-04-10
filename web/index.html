@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Piping</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Piping</h1>
+      <button id="theme-toggle" type="button" aria-label="Toggle dark mode">
+        <span id="theme-icon">&#9790;</span>
+      </button>
+    </header>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="send">Send</button>
+      <button class="tab" data-tab="receive">Receive</button>
+    </div>
+
+    <div id="send-panel" class="panel active">
+      <div class="field">
+        <label for="send-path">Secret path</label>
+        <div class="path-row">
+          <input type="text" id="send-path" placeholder="e.g. 1234" autocomplete="off">
+          <button id="send-path-gen" type="button" title="Generate random path">&#x21bb;</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>File</label>
+        <div id="drop-zone" class="drop-zone">
+          <p>Drop files here or click to select</p>
+          <input type="file" id="file-input" multiple>
+        </div>
+        <div id="file-list"></div>
+      </div>
+
+      <div class="field">
+        <label for="text-input">Text</label>
+        <textarea id="text-input" rows="4" placeholder="Or type text to send..."></textarea>
+      </div>
+
+      <button id="send-btn" class="primary-btn" type="button">Send</button>
+
+      <div id="send-status" class="status" hidden>
+        <div class="progress-bar"><div id="send-progress" class="progress-fill"></div></div>
+        <p id="send-message"></p>
+      </div>
+    </div>
+
+    <div id="receive-panel" class="panel">
+      <div class="field">
+        <label for="recv-path">Secret path</label>
+        <div class="path-row">
+          <input type="text" id="recv-path" placeholder="e.g. 1234" autocomplete="off">
+        </div>
+      </div>
+
+      <button id="recv-btn" class="primary-btn" type="button">Receive</button>
+
+      <div id="recv-status" class="status" hidden>
+        <div class="progress-bar"><div id="recv-progress" class="progress-fill"></div></div>
+        <p id="recv-message"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
