@@ -59,11 +59,32 @@
         </div>
       </div>
 
+      <div class="field">
+        <label>Receive as</label>
+        <div class="choice-row" id="recv-mode">
+          <label class="choice-option">
+            <input type="radio" name="recv-mode" value="screen" checked>
+            <span>Screen</span>
+          </label>
+          <label class="choice-option">
+            <input type="radio" name="recv-mode" value="download">
+            <span>File</span>
+          </label>
+        </div>
+      </div>
+
       <button id="recv-btn" class="primary-btn" type="button">Receive</button>
 
       <div id="recv-status" class="status" hidden>
         <div class="progress-bar"><div id="recv-progress" class="progress-fill"></div></div>
         <p id="recv-message"></p>
+      </div>
+
+      <div id="recv-output" class="recv-output" hidden>
+        <pre id="recv-content"></pre>
+        <div class="recv-output-actions">
+          <button id="recv-copy-btn" type="button" class="icon-btn" aria-label="Copy text" title="Copy text">&#x2398;</button>
+        </div>
       </div>
     </div>
   </div>

@@ -142,6 +142,28 @@ header h1 {
   gap: 0.5rem;
 }
 
+.choice-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.choice-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--on-surface);
+  font-size: 0.95rem;
+}
+
+.choice-option input {
+  margin: 0;
+}
+
 .path-row input {
   flex: 1;
 }
@@ -300,11 +322,63 @@ textarea {
   color: #2e7d32;
 }
 
+.recv-output {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  padding: 0.9rem;
+}
+
+#recv-content {
+  margin: 0;
+  max-height: 50vh;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--on-surface);
+}
+
+.recv-output-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.icon-btn {
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--on-surface);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.icon-btn:hover {
+  background: var(--tab-inactive);
+}
+
+.icon-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 @media (max-width: 520px) {
   body {
     padding: 1rem 0.5rem;
   }
   .panel {
     padding: 1rem;
+  }
+  .recv-output {
+    padding: 0.75rem;
   }
 }

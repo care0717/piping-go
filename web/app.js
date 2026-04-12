@@ -26,6 +26,17 @@ function getFilenameFromHeaders(headers) {
   return null;
 }
 
+function getReceiveMode() {
+  var checked = document.querySelector('input[name="recv-mode"]:checked');
+  return checked ? checked.value : "download";
+}
+
+function clearReceiveOutput() {
+  recvOutput.hidden = true;
+  recvContent.textContent = "";
+  recvCopyBtn.disabled = true;
+}
+
 // --- DOM References ---
 
 const sendPanel = document.getElementById("send-panel");
@@ -48,6 +59,9 @@ const recvBtn = document.getElementById("recv-btn");
 const recvStatus = document.getElementById("recv-status");
 const recvProgress = document.getElementById("recv-progress");
 const recvMessage = document.getElementById("recv-message");
+const recvOutput = document.getElementById("recv-output");
+const recvContent = document.getElementById("recv-content");
+const recvCopyBtn = document.getElementById("recv-copy-btn");
 
 const themeToggle = document.getElementById("theme-toggle");
 const themeIcon = document.getElementById("theme-icon");
@@ -55,6 +69,7 @@ const themeIcon = document.getElementById("theme-icon");
 // --- State ---
 
 let selectedFiles = [];
+let lastReceivedText = null;
 
 // --- Theme ---
 
@@ -73,6 +88,7 @@ function applyTheme(theme) {
 }
 
 applyTheme(getPreferredTheme());
+clearReceiveOutput();
 
 themeToggle.addEventListener("click", function () {
   const current = document.documentElement.dataset.theme;
@@ -249,6 +265,19 @@ sendBtn.addEventListener("click", function () {
 
 // --- Receive ---
 
+recvCopyBtn.addEventListener("click", async function () {
+  if (lastReceivedText === null) return;
+
+  try {
+    await navigator.clipboard.writeText(lastReceivedText);
+    recvMessage.textContent = "Copied received text.";
+    recvMessage.className = "success";
+  } catch (err) {
+    recvMessage.textContent = "Copy failed: " + (err.message || String(err));
+    recvMessage.className = "error";
+  }
+});
+
 recvBtn.addEventListener("click", async function () {
   var path = recvPath.value.trim();
   if (!path) {
@@ -264,6 +293,8 @@ recvBtn.addEventListener("click", async function () {
   recvProgress.style.width = "";
   recvMessage.textContent = "Waiting for sender...";
   recvMessage.className = "";
+  lastReceivedText = null;
+  clearReceiveOutput();
 
   try {
     var res = await fetch(url);
@@ -274,6 +305,7 @@ recvBtn.addEventListener("click", async function () {
     var contentLength = res.headers.get("Content-Length");
     var totalBytes = contentLength ? parseInt(contentLength, 10) : null;
     var filename = getFilenameFromHeaders(res.headers) || path;
+    var receiveMode = getReceiveMode();
 
     recvProgress.classList.remove("indeterminate");
     recvMessage.textContent = "Receiving...";
@@ -304,20 +336,29 @@ recvBtn.addEventListener("click", async function () {
       }
     }
 
-    // Trigger download
     var ct = res.headers.get("Content-Type") || "application/octet-stream";
     var blob = new Blob(chunks, { type: ct });
-    var objUrl = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    a.href = objUrl;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(objUrl);
+
+    if (receiveMode === "screen") {
+      var text = await blob.text();
+      lastReceivedText = text;
+      recvContent.textContent = text;
+      recvCopyBtn.disabled = false;
+      recvOutput.hidden = false;
+      recvMessage.textContent = "Received " + readableBytes(loaded) + " on screen.";
+    } else {
+      var objUrl = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = objUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(objUrl);
+      recvMessage.textContent = "Received " + readableBytes(loaded) + " - " + filename;
+    }
 
     recvProgress.style.width = "100%";
-    recvMessage.textContent = "Received " + readableBytes(loaded) + " - " + filename;
     recvMessage.className = "success";
   } catch (err) {
     recvProgress.classList.remove("indeterminate");
